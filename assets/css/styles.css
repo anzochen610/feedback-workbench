@@ -117,6 +117,11 @@ p { margin: 0 0 14px; color: var(--muted); }
   background: var(--warning-bg);
 }
 
+.complete {
+  border-color: #9ccfc8;
+  background: #eaf7f5;
+}
+
 .section-block { margin-top: 34px; }
 
 .section-heading {
@@ -136,6 +141,7 @@ p { margin: 0 0 14px; color: var(--muted); }
 .feedback-card,
 .form-section,
 .alert,
+.complete,
 .suggestion,
 .preview-card,
 .form-actions { padding: 24px; }
@@ -284,6 +290,7 @@ textarea { resize: vertical; }
   .feedback-card,
   .form-section,
   .alert,
+  .complete,
   .suggestion,
   .preview-card,
   .form-actions { padding: 20px; }
