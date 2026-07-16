@@ -102,9 +102,18 @@ function restoreCanReproduce(value) {
   group.value = typeof value === "string" ? value : "";
 }
 
+function removeNewDraftParam() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("new");
+  history.replaceState(history.state, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
 function restoreDraft() {
   const params = new URLSearchParams(window.location.search);
-  if (params.get("new") === "1") sessionStorage.removeItem(DRAFT_KEY);
+  if (params.get("new") === "1") {
+    sessionStorage.removeItem(DRAFT_KEY);
+    removeNewDraftParam();
+  }
 
   const draft = readDraftFromStorage();
   writeTextField("title", draft.title);
