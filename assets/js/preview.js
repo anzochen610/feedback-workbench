@@ -18,7 +18,7 @@ function readDraft() {
 function hasAnyContent(draft) {
   if (!draft) return false;
   return Object.entries(draft).some(([key, value]) => {
-    if (key === "operationSteps") return Array.isArray(value) && value.some((step) => step.trim());
+    if (key === "operationSteps") return Array.isArray(value) && value.some((step) => typeof step === "string" && step.trim());
     return typeof value === "string" && value.trim();
   });
 }
@@ -39,7 +39,7 @@ function appendSteps(steps) {
   const term = document.createElement("dt");
   term.textContent = "具体操作步骤";
   const description = document.createElement("dd");
-  const filledSteps = Array.isArray(steps) ? steps.map((step) => step.trim()).filter(Boolean) : [];
+  const filledSteps = Array.isArray(steps) ? steps.filter((step) => typeof step === "string").map((step) => step.trim()).filter(Boolean) : [];
   if (filledSteps.length === 0) {
     description.textContent = "未填写";
   } else {

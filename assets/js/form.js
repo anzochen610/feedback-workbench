@@ -8,20 +8,46 @@ const stepsContainer = document.querySelector("[data-operation-steps]");
 const addStepButton = document.querySelector("[data-add-step]");
 let currentStep = 0;
 
+function field(name) {
+  return form.elements.namedItem(name);
+}
+
+function readTextField(name) {
+  const control = field(name);
+  return control ? control.value : "";
+}
+
+function writeTextField(name, value) {
+  const control = field(name);
+  if (control) control.value = typeof value === "string" ? value : "";
+}
+
+function readDraftFromStorage() {
+  const saved = sessionStorage.getItem(DRAFT_KEY);
+  if (!saved) return {};
+  try {
+    const parsed = JSON.parse(saved);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    sessionStorage.removeItem(DRAFT_KEY);
+    return {};
+  }
+}
+
 function getDraft() {
   const operationSteps = Array.from(document.querySelectorAll("[data-operation-input]")).map((input) => input.value);
   return {
-    title: form.title.value,
-    usageBackground: form.usageBackground.value,
-    userGoal: form.userGoal.value,
-    pageOrStep: form.pageOrStep.value,
+    title: readTextField("title"),
+    usageBackground: readTextField("usageBackground"),
+    userGoal: readTextField("userGoal"),
+    pageOrStep: readTextField("pageOrStep"),
     operationSteps,
-    actualResult: form.actualResult.value,
-    canReproduce: form.canReproduce.value,
-    expectedResult: form.expectedResult.value,
-    impact: form.impact.value,
-    temporaryWorkaround: form.temporaryWorkaround.value,
-    proposedSolution: form.proposedSolution.value,
+    actualResult: readTextField("actualResult"),
+    canReproduce: readTextField("canReproduce"),
+    expectedResult: readTextField("expectedResult"),
+    impact: readTextField("impact"),
+    temporaryWorkaround: readTextField("temporaryWorkaround"),
+    proposedSolution: readTextField("proposedSolution"),
   };
 }
 
@@ -40,7 +66,7 @@ function createOperationStep(value = "") {
   const input = document.createElement("input");
   input.id = inputId;
   input.type = "text";
-  input.value = value;
+  input.value = typeof value === "string" ? value : "";
   input.dataset.operationInput = "";
   input.placeholder = "例如：点击提交按钮";
 
@@ -70,22 +96,28 @@ function renumberOperationSteps() {
   });
 }
 
+function restoreCanReproduce(value) {
+  const group = field("canReproduce");
+  if (!group) return;
+  group.value = typeof value === "string" ? value : "";
+}
+
 function restoreDraft() {
-  const saved = sessionStorage.getItem(DRAFT_KEY);
-  const draft = saved ? JSON.parse(saved) : {};
-  form.title.value = draft.title || "";
-  form.usageBackground.value = draft.usageBackground || "";
-  form.userGoal.value = draft.userGoal || "";
-  form.pageOrStep.value = draft.pageOrStep || "";
-  form.actualResult.value = draft.actualResult || "";
-  form.expectedResult.value = draft.expectedResult || "";
-  form.impact.value = draft.impact || "";
-  form.temporaryWorkaround.value = draft.temporaryWorkaround || "";
-  form.proposedSolution.value = draft.proposedSolution || "";
-  if (draft.canReproduce) {
-    const radio = form.querySelector(`[name="canReproduce"][value="${CSS.escape(draft.canReproduce)}"]`);
-    if (radio) radio.checked = true;
-  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("new") === "1") sessionStorage.removeItem(DRAFT_KEY);
+
+  const draft = readDraftFromStorage();
+  writeTextField("title", draft.title);
+  writeTextField("usageBackground", draft.usageBackground);
+  writeTextField("userGoal", draft.userGoal);
+  writeTextField("pageOrStep", draft.pageOrStep);
+  writeTextField("actualResult", draft.actualResult);
+  writeTextField("expectedResult", draft.expectedResult);
+  writeTextField("impact", draft.impact);
+  writeTextField("temporaryWorkaround", draft.temporaryWorkaround);
+  writeTextField("proposedSolution", draft.proposedSolution);
+  restoreCanReproduce(draft.canReproduce);
+
   const savedSteps = Array.isArray(draft.operationSteps) && draft.operationSteps.length ? draft.operationSteps : ["", ""];
   savedSteps.forEach((step) => createOperationStep(step));
 }
@@ -107,6 +139,9 @@ function showStep(stepIndex, shouldFocus = true) {
 restoreDraft();
 showStep(0, false);
 
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+});
 form.addEventListener("input", saveDraft);
 form.addEventListener("change", saveDraft);
 addStepButton.addEventListener("click", () => {
