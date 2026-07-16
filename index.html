@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>体验反馈工作台</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主导航">
+      <a class="brand" href="index.html">体验反馈工作台</a>
+      <a class="nav-link" href="feedback-form.html">新建反馈</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card">
+      <p class="eyebrow">静态页面原型 · 阶段 1</p>
+      <h1>体验反馈工作台</h1>
+      <p class="lead">帮助非产品岗位新人，把零散的产品使用感受整理成结构更清楚的反馈文本。</p>
+      <div class="notice-grid">
+        <div class="notice">
+          <h2>适合谁使用</h2>
+          <p>适合市场实习生、内容运营、用户运营等需要向产品或研发同学说明体验问题的新手。</p>
+        </div>
+        <div class="notice warning">
+          <h2>匿名与隐私提醒</h2>
+          <p>请不要填写真实公司、产品、部门、同事、客户或内部资料名称，示例统一使用匿名表达。</p>
+        </div>
+        <div class="notice">
+          <h2>本地保存提醒</h2>
+          <p>第一版计划仅保存在当前浏览器中。清除浏览器数据或更换设备后，历史反馈可能无法找回。</p>
+        </div>
+      </div>
+      <a class="button primary large" href="feedback-form.html">新建反馈</a>
+    </section>
+
+    <section class="section-block" aria-labelledby="history-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">历史反馈</p>
+          <h2 id="history-title">查看已整理的反馈</h2>
+        </div>
+        <p>当前页面只展示静态示例，尚未实现真实保存、编辑或删除功能。</p>
+      </div>
+
+      <div class="history-list">
+        <article class="feedback-card card">
+          <div class="card-topline">
+            <span class="tag">示例</span>
+            <time datetime="2026-07-12">更新时间：2026-07-12 14:20</time>
+          </div>
+          <h3>示例：生成结果提示不够明确</h3>
+          <p>信息概览：在体验某 AI 产品的内容生成页面时，提交后页面停留时间较长，用户不确定是否需要继续等待。</p>
+          <div class="card-actions" aria-label="示例反馈操作">
+            <a class="text-link" href="feedback-form.html">编辑</a>
+            <button class="button ghost" type="button">删除</button>
+          </div>
+        </article>
+
+        <article class="feedback-card card">
+          <div class="card-topline">
+            <span class="tag">示例</span>
+            <time datetime="2026-07-10">更新时间：2026-07-10 09:35</time>
+          </div>
+          <h3>示例：筛选条件重置后不易发现</h3>
+          <p>信息概览：在匿名测试列表页切换筛选条件后，返回页面时条件被重置，但页面没有明显提醒。</p>
+          <div class="card-actions" aria-label="示例反馈操作">
+            <a class="text-link" href="feedback-form.html">编辑</a>
+            <button class="button ghost" type="button">删除</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
