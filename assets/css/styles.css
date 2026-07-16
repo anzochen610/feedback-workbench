@@ -299,3 +299,81 @@ textarea { resize: vertical; }
   .section-heading { display: block; }
   .preview-list { grid-template-columns: 1fr; }
 }
+
+.compact-heading h1 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.draft-note {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--warning-border);
+  border-radius: 12px;
+  background: var(--warning-bg);
+  color: #6b5622;
+  font-size: 0.95rem;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.field-heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.small-button {
+  min-height: 34px;
+  padding: 6px 12px;
+  font-size: 0.92rem;
+}
+
+.operation-steps {
+  display: grid;
+  gap: 12px;
+}
+
+.operation-step-row {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.operation-step-row label {
+  margin: 0;
+  color: var(--primary-dark);
+}
+
+.button:disabled,
+.button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.preview-list ol {
+  margin: 0;
+  padding-left: 1.4rem;
+}
+
+@media (max-width: 760px) {
+  .compact-heading h1 { font-size: clamp(1.7rem, 8vw, 2.25rem); }
+  .stepper {
+    gap: 8px;
+  }
+  .stepper li {
+    padding: 10px;
+  }
+  .operation-step-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+  .field-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
