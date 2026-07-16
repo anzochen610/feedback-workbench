@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>检查与预览 - 体验反馈工作台</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主导航">
+      <a class="brand" href="index.html">体验反馈工作台</a>
+      <a class="nav-link" href="feedback-form.html">返回编辑</a>
+    </nav>
+  </header>
+
+  <main class="page-shell narrow">
+    <section class="section-block">
+      <p class="eyebrow">检查、预览与复制</p>
+      <h1>提交前先检查结构是否清楚</h1>
+      <p class="lead small">本页只展示静态示例，不会自动检查、复制或保存。</p>
+    </section>
+
+    <section class="card complete" aria-labelledby="required-check-title">
+      <h2 id="required-check-title">必填项检查</h2>
+      <p>当前示例已填写全部必填项，可以继续查看补充建议和结构化预览。</p>
+      <p>如果真实反馈存在缺失字段，后续功能版本会在这里逐项提醒。</p>
+    </section>
+
+    <section class="card suggestion" aria-labelledby="suggestion-title">
+      <h2 id="suggestion-title">温和的补充建议</h2>
+      <ul>
+        <li>如果操作步骤只有一条，可以补充点击前后的页面变化。</li>
+        <li>如果实际结果较简略，可以写清楚页面提示、等待时间或你看到的变化。</li>
+        <li>如果建议方案较多，可以先补充事实，再把方案作为参考。</li>
+      </ul>
+    </section>
+
+    <section class="card preview-card" aria-labelledby="preview-title">
+      <div class="card-topline">
+        <span class="tag">示例预览</span>
+        <span>匿名结构化反馈</span>
+      </div>
+      <h2 id="preview-title">示例：生成结果等待时缺少明确提示</h2>
+      <dl class="preview-list">
+        <dt>使用背景</dt>
+        <dd>我在体验某 AI 产品的内容生成能力，需要整理一段匿名活动说明初稿。</dd>
+        <dt>用户目标</dt>
+        <dd>希望快速得到一段可继续修改的文字内容，用于后续内部练习。</dd>
+        <dt>问题发生的页面或环节</dt>
+        <dd>内容生成页，点击提交按钮之后。</dd>
+        <dt>具体操作步骤</dt>
+        <dd>1. 打开匿名测试页面。<br>2. 输入一段测试内容。<br>3. 点击提交按钮并等待结果。</dd>
+        <dt>实际结果</dt>
+        <dd>页面持续显示加载状态，但没有说明是否提交成功，也没有提示大约需要等待多久。</dd>
+        <dt>是否可以重复出现</dt>
+        <dd>还不确定，需要再次用匿名内容测试。</dd>
+        <dt>预期结果</dt>
+        <dd>希望页面明确提示正在处理，并说明用户可以继续等待或稍后重试。</dd>
+        <dt>造成的影响</dt>
+        <dd>用户可能不确定是否需要重新点击，容易产生重复操作。</dd>
+        <dt>临时解决方式（选填）</dt>
+        <dd>刷新页面后重新提交一次。</dd>
+        <dt>建议解决方案（选填）</dt>
+        <dd>可以增加处理中提示，并在等待时间较长时给出温和说明。</dd>
+      </dl>
+    </section>
+
+    <div class="form-actions card">
+      <a class="button secondary" href="feedback-form.html">返回编辑</a>
+      <button class="button ghost" type="button">复制纯文本</button>
+      <button class="button primary" type="button">保存到历史</button>
+    </div>
+  </main>
+</body>
+</html>

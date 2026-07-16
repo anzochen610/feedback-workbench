@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新建反馈 - 体验反馈工作台</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主导航">
+      <a class="brand" href="index.html">体验反馈工作台</a>
+      <a class="nav-link" href="index.html">返回首页</a>
+    </nav>
+  </header>
+
+  <main class="page-shell narrow">
+    <section class="section-block">
+      <p class="eyebrow">新建 / 编辑反馈</p>
+      <h1>按三步整理一条体验反馈</h1>
+      <p class="lead small">本页是静态原型。按钮只展示操作路径，不会保存数据，也不会检查填写内容。</p>
+
+      <ol class="stepper" aria-label="三步进度提示">
+        <li class="active" aria-current="step"><span>1</span>使用场景</li>
+        <li><span>2</span>问题事实</li>
+        <li><span>3</span>影响与期望</li>
+      </ol>
+    </section>
+
+    <form class="form-stack" action="preview.html">
+      <section class="form-section card" aria-labelledby="step-one">
+        <h2 id="step-one">第一步：使用场景</h2>
+        <div class="field">
+          <label for="title">反馈标题</label>
+          <input id="title" name="title" type="text" placeholder="例如：生成结果等待时缺少明确提示">
+          <p class="hint">用一句话说明你遇到的主要问题，方便以后查找。</p>
+        </div>
+        <div class="field">
+          <label for="usage-background">使用背景</label>
+          <textarea id="usage-background" name="usage-background" rows="4" placeholder="例如：我在整理一份匿名活动说明，需要快速生成初稿。"></textarea>
+          <p class="hint">说明你当时为什么使用这个功能，避免只写“我遇到了问题”。</p>
+        </div>
+        <div class="field">
+          <label for="user-goal">用户目标</label>
+          <textarea id="user-goal" name="user-goal" rows="3" placeholder="例如：我希望拿到一段可继续修改的文字初稿。"></textarea>
+          <p class="hint">写清楚你原本想完成什么事情。</p>
+        </div>
+        <div class="field">
+          <label for="page-or-step">问题发生的页面或环节</label>
+          <input id="page-or-step" name="page-or-step" type="text" placeholder="例如：内容生成页，点击提交之后">
+          <p class="hint">尽量说明具体页面、按钮或流程节点。</p>
+        </div>
+      </section>
+
+      <section class="form-section card" aria-labelledby="step-two">
+        <h2 id="step-two">第二步：问题事实</h2>
+        <div class="field">
+          <label for="operation-steps">具体操作步骤</label>
+          <textarea id="operation-steps" name="operation-steps" rows="5" placeholder="1. 打开匿名测试页面&#10;2. 输入一段测试内容&#10;3. 点击提交按钮"></textarea>
+          <p class="hint">按顺序写下你做了什么。本阶段只展示文本框，不实现逐条添加功能。</p>
+        </div>
+        <div class="field">
+          <label for="actual-result">实际结果</label>
+          <textarea id="actual-result" name="actual-result" rows="4" placeholder="例如：页面停留在加载状态，没有说明大约需要等待多久。"></textarea>
+          <p class="hint">只描述你看到的结果，不急着下结论。</p>
+        </div>
+        <fieldset class="field radio-field">
+          <legend>是否可以重复出现</legend>
+          <label><input type="radio" name="can-reproduce" value="yes"> 可以重复出现</label>
+          <label><input type="radio" name="can-reproduce" value="no"> 暂时不能重复出现</label>
+          <label><input type="radio" name="can-reproduce" value="unknown"> 还不确定</label>
+          <p class="hint">如果不确定，可以先选择“还不确定”。</p>
+        </fieldset>
+      </section>
+
+      <section class="form-section card" aria-labelledby="step-three">
+        <h2 id="step-three">第三步：影响与期望</h2>
+        <div class="field">
+          <label for="expected-result">预期结果</label>
+          <textarea id="expected-result" name="expected-result" rows="3" placeholder="例如：希望页面能提示正在处理，并说明可以继续等待。"></textarea>
+          <p class="hint">写清楚你原本期待页面如何回应。</p>
+        </div>
+        <div class="field">
+          <label for="impact">造成的影响</label>
+          <textarea id="impact" name="impact" rows="3" placeholder="例如：我不确定是否提交成功，重复点击可能造成重复请求。"></textarea>
+          <p class="hint">说明这个问题如何影响你完成任务。</p>
+        </div>
+        <div class="field">
+          <label for="temporary-workaround">临时解决方式 <span class="optional">选填</span></label>
+          <textarea id="temporary-workaround" name="temporary-workaround" rows="3" placeholder="例如：我刷新页面后重新提交了一次。"></textarea>
+          <p class="hint">如果你当时有临时办法，可以写在这里；没有也可以不填。</p>
+        </div>
+        <div class="field">
+          <label for="proposed-solution">建议解决方案 <span class="optional">选填</span></label>
+          <textarea id="proposed-solution" name="proposed-solution" rows="3" placeholder="例如：可以增加处理中提示和预计等待说明。"></textarea>
+          <p class="hint">建议只是参考，重点仍然是先把事实说明清楚。</p>
+        </div>
+      </section>
+
+      <div class="form-actions card">
+        <a class="button secondary" href="index.html">上一步</a>
+        <a class="button secondary" href="#step-two">下一步</a>
+        <button class="button ghost" type="button">保存草稿</button>
+        <a class="button primary" href="preview.html">进入预览</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>
