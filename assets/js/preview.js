@@ -10,6 +10,59 @@ const previewState = document.querySelector("[data-preview-state]");
 const previewActions = document.querySelector("[data-preview-actions]");
 const previewTitle = document.querySelector("#preview-title");
 const previewList = document.querySelector("[data-preview-list]");
+const copyButton = document.querySelector("[data-copy-plain-text]");
+const copyStatus = document.querySelector("[data-copy-status]");
+
+function showCopyStatus(message, type) {
+  if (!copyStatus) return;
+  copyStatus.textContent = message;
+  copyStatus.className = `copy-status ${type === "success" ? "success" : "error"}`;
+  copyStatus.hidden = false;
+}
+
+function fallbackCopyText(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.top = "-9999px";
+  textArea.style.left = "-9999px";
+  document.body.append(textArea);
+  textArea.select();
+  textArea.setSelectionRange(0, textArea.value.length);
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } finally {
+    textArea.remove();
+  }
+
+  return copied;
+}
+
+async function copyPlainText(draft) {
+  if (!hasAnyContent(draft) || typeof window.buildFeedbackPlainText !== "function") {
+    showCopyStatus("复制失败，请重试或手动选择预览内容。", "error");
+    return;
+  }
+
+  const text = window.buildFeedbackPlainText(draft);
+  try {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      await navigator.clipboard.writeText(text);
+    } else if (!fallbackCopyText(text)) {
+      throw new Error("Fallback copy failed");
+    }
+    showCopyStatus("已复制，可以粘贴到文档或聊天工具中。", "success");
+  } catch {
+    if (fallbackCopyText(text)) {
+      showCopyStatus("已复制，可以粘贴到文档或聊天工具中。", "success");
+      return;
+    }
+    showCopyStatus("复制失败，请重试或手动选择预览内容。", "error");
+  }
+}
 
 function readDraft() {
   const saved = sessionStorage.getItem(DRAFT_KEY);
@@ -105,4 +158,8 @@ if (!hasAnyContent(draft)) {
   appendTextItem("建议解决方案（选填）", draft.proposedSolution);
   previewState.hidden = false;
   previewActions.hidden = false;
+  if (copyButton) {
+    copyButton.disabled = false;
+    copyButton.addEventListener("click", () => copyPlainText(draft));
+  }
 }
