@@ -1,6 +1,21 @@
 const historyList = document.querySelector("[data-history-list]");
 const historyEmpty = document.querySelector("[data-history-empty]");
 
+function isRenderableRecord(record) {
+  return Boolean(
+    record
+      && typeof record === "object"
+      && !Array.isArray(record)
+      && typeof record.id === "string"
+      && record.id.trim()
+  );
+}
+
+function getUpdatedAtTime(value) {
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? Number.NEGATIVE_INFINITY : time;
+}
+
 function formatUpdatedAt(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "更新时间：未知";
@@ -62,7 +77,14 @@ function renderHistory() {
   if (!historyList || !historyEmpty || !window.FeedbackHistoryStorage || typeof window.checkFeedbackCompleteness !== "function") return;
 
   const storage = window.FeedbackHistoryStorage.createHistoryStorage();
-  const records = storage.getAll().slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+  const records = storage.getAll()
+    .filter(isRenderableRecord)
+    .map((record, index) => ({ record, index }))
+    .sort((a, b) => {
+      const timeDiff = getUpdatedAtTime(b.record.updatedAt) - getUpdatedAtTime(a.record.updatedAt);
+      return timeDiff || a.index - b.index;
+    })
+    .map(({ record }) => record);
   historyList.replaceChildren();
   historyEmpty.hidden = records.length > 0;
 

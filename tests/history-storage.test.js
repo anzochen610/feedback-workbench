@@ -91,6 +91,24 @@ function fullDraft(extra = {}) {
   assert.deepEqual(storage.getAll(), []);
 }
 
+
+{
+  const validRecord = { id: "valid-record", title: "字段不完整但有效" };
+  const mixedHistory = [
+    null,
+    123,
+    "broken",
+    ["array is invalid"],
+    {},
+    { id: "" },
+    { id: "   " },
+    { title: "missing id" },
+    validRecord,
+  ];
+  const storage = createHistoryStorage(createFakeStorage({ [key]: JSON.stringify(mixedHistory) }));
+  assert.deepEqual(storage.getAll(), [validRecord]);
+}
+
 {
   const failingStorage = {
     getItem() {

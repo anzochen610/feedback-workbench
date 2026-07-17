@@ -34,6 +34,16 @@
     return Array.isArray(steps) ? steps.map(asText) : [];
   }
 
+  function isValidHistoryRecord(record) {
+    return Boolean(
+      record
+        && typeof record === "object"
+        && !Array.isArray(record)
+        && typeof record.id === "string"
+        && record.id.trim()
+    );
+  }
+
   function normalizeRecord(draft, existingRecord) {
     const now = new Date().toISOString();
     const record = {
@@ -90,7 +100,7 @@
       if (!raw) return [];
       try {
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
+        return Array.isArray(parsed) ? parsed.filter(isValidHistoryRecord) : [];
       } catch {
         return [];
       }
