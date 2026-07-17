@@ -10,6 +10,77 @@ const previewState = document.querySelector("[data-preview-state]");
 const previewActions = document.querySelector("[data-preview-actions]");
 const previewTitle = document.querySelector("#preview-title");
 const previewList = document.querySelector("[data-preview-list]");
+const copyButton = document.querySelector("[data-copy-plain-text]");
+const copyStatus = document.querySelector("[data-copy-status]");
+
+function showCopyStatus(message, type) {
+  if (!copyStatus) return;
+  copyStatus.textContent = message;
+  copyStatus.className = `copy-status ${type === "success" ? "success" : "error"}`;
+  copyStatus.hidden = false;
+}
+
+function fallbackCopyText(text) {
+  let textArea = null;
+
+  try {
+    if (typeof document.execCommand !== "function") {
+      return false;
+    }
+
+    textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.top = "-9999px";
+    textArea.style.left = "-9999px";
+    document.body.append(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, textArea.value.length);
+
+    return document.execCommand("copy") === true;
+  } catch {
+    return false;
+  } finally {
+    if (textArea) {
+      try {
+        textArea.remove();
+      } catch {
+        // Even cleanup errors should not escape the fallback copy helper.
+      }
+    }
+  }
+}
+
+async function copyPlainText(draft) {
+  if (!hasAnyContent(draft) || typeof window.buildFeedbackPlainText !== "function") {
+    showCopyStatus("复制失败，请重试或手动选择预览内容。", "error");
+    return;
+  }
+
+  const text = window.buildFeedbackPlainText(draft);
+  let copied = false;
+
+  if (typeof navigator !== "undefined" && navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+    try {
+      await navigator.clipboard.writeText(text);
+      copied = true;
+    } catch {
+      copied = false;
+    }
+  }
+
+  if (!copied) {
+    copied = fallbackCopyText(text);
+  }
+
+  if (copied) {
+    showCopyStatus("已复制，可以粘贴到文档或聊天工具中。", "success");
+    return;
+  }
+
+  showCopyStatus("复制失败，请重试或手动选择预览内容。", "error");
+}
 
 function readDraft() {
   const saved = sessionStorage.getItem(DRAFT_KEY);
@@ -105,4 +176,8 @@ if (!hasAnyContent(draft)) {
   appendTextItem("建议解决方案（选填）", draft.proposedSolution);
   previewState.hidden = false;
   previewActions.hidden = false;
+  if (copyButton) {
+    copyButton.disabled = false;
+    copyButton.addEventListener("click", () => copyPlainText(draft));
+  }
 }

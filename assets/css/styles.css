@@ -425,3 +425,31 @@ textarea { resize: vertical; }
   .completeness-card { padding: 20px; }
   .check-grid { grid-template-columns: 1fr; }
 }
+
+.copy-status {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.copy-status.success {
+  border-color: #9ccfc8;
+  background: #eaf7f5;
+  color: var(--primary-dark);
+}
+
+.copy-status.error {
+  border-color: #e7b8a4;
+  background: #fff0ea;
+  color: #7a3f2a;
+}
+
+@media (max-width: 760px) {
+  .form-actions .button,
+  .copy-status {
+    width: 100%;
+  }
+}
