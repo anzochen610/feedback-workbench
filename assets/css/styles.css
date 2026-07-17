@@ -377,3 +377,51 @@ textarea { resize: vertical; }
     flex-direction: column;
   }
 }
+
+.completeness-card {
+  padding: 24px;
+  margin-bottom: 18px;
+}
+
+.level-badge {
+  display: inline-flex;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.level-missing {
+  border-color: #e7b8a4;
+  background: #fff0ea;
+  color: #7a3f2a;
+}
+
+.level-suggest {
+  border-color: var(--warning-border);
+  background: var(--warning-bg);
+  color: #6b5622;
+}
+
+.level-complete {
+  border-color: #9ccfc8;
+  background: #eaf7f5;
+  color: var(--primary-dark);
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.check-grid ul {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+@media (max-width: 760px) {
+  .completeness-card { padding: 20px; }
+  .check-grid { grid-template-columns: 1fr; }
+}
