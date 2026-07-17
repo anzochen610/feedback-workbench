@@ -453,3 +453,48 @@ textarea { resize: vertical; }
     width: 100%;
   }
 }
+
+.history-empty {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: 24px;
+}
+
+.history-empty p {
+  margin: 0;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.save-status {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.save-status.success {
+  border-color: #9ccfc8;
+  background: #eaf7f5;
+  color: var(--primary-dark);
+}
+
+.save-status.error {
+  border-color: #e7b8a4;
+  background: #fff0ea;
+  color: #7a3f2a;
+}
+
+.feedback-card p {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .history-empty,
+  .save-status {
+    width: 100%;
+  }
+}

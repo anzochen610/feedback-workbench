@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>体验反馈工作台</title>
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="assets/js/completeness.js" defer></script>
+  <script src="assets/js/history-storage.js" defer></script>
+  <script src="assets/js/home.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -29,7 +32,7 @@
         </div>
         <div class="notice">
           <h2>本地保存提醒</h2>
-          <p>第一版计划仅保存在当前浏览器中。清除浏览器数据或更换设备后，历史反馈可能无法找回。</p>
+          <p>历史反馈只保存在当前浏览器。清除浏览器数据后可能丢失，更换浏览器或设备后不会同步。</p>
         </div>
       </div>
       <a class="button primary large" href="feedback-form.html?new=1">新建反馈</a>
@@ -39,38 +42,17 @@
       <div class="section-heading">
         <div>
           <p class="eyebrow">历史反馈</p>
-          <h2 id="history-title">查看已整理的反馈</h2>
+          <h2 id="history-title">查看已保存的反馈</h2>
         </div>
-        <p>当前页面保留两个明确标注为“示例”的反馈卡片，暂不实现真实历史记录。</p>
+        <a class="button primary" href="feedback-form.html?new=1">新建反馈</a>
       </div>
 
-      <div class="history-list">
-        <article class="feedback-card card">
-          <div class="card-topline">
-            <span class="tag">示例</span>
-            <time datetime="2026-07-12">更新时间：2026-07-12 14:20</time>
-          </div>
-          <h3>示例：生成结果提示不够明确</h3>
-          <p>信息概览：在体验某 AI 产品的内容生成页面时，提交后页面停留时间较长，用户不确定是否需要继续等待。</p>
-          <div class="card-actions" aria-label="示例反馈操作">
-            <button class="button ghost" type="button" disabled>编辑（暂不可用）</button>
-            <button class="button ghost" type="button" disabled>删除（暂不可用）</button>
-          </div>
-        </article>
-
-        <article class="feedback-card card">
-          <div class="card-topline">
-            <span class="tag">示例</span>
-            <time datetime="2026-07-10">更新时间：2026-07-10 09:35</time>
-          </div>
-          <h3>示例：筛选条件重置后不易发现</h3>
-          <p>信息概览：在匿名测试列表页切换筛选条件后，返回页面时条件被重置，但页面没有明显提醒。</p>
-          <div class="card-actions" aria-label="示例反馈操作">
-            <button class="button ghost" type="button" disabled>编辑（暂不可用）</button>
-            <button class="button ghost" type="button" disabled>删除（暂不可用）</button>
-          </div>
-        </article>
+      <div class="history-empty card" data-history-empty hidden>
+        <p>还没有历史反馈，创建并保存第一条反馈吧。</p>
+        <a class="button primary" href="feedback-form.html?new=1">新建反馈</a>
       </div>
+
+      <div class="history-list" data-history-list></div>
     </section>
   </main>
 </body>

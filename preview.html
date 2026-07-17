@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <script src="assets/js/completeness.js" defer></script>
   <script src="assets/js/feedback-text.js" defer></script>
+  <script src="assets/js/history-storage.js" defer></script>
   <script src="assets/js/preview.js" defer></script>
 </head>
 <body>
@@ -21,7 +22,7 @@
     <section class="section-block compact-heading">
       <p class="eyebrow">结构化预览</p>
       <h1>检查整理后的反馈内容</h1>
-      <p class="lead small">本阶段只读取当前标签页的临时填写内容，可复制结构化纯文本；保存到历史暂不可用。</p>
+      <p class="lead small">本页读取当前标签页的临时填写内容，可复制结构化纯文本，也可保存到当前浏览器的历史反馈。</p>
     </section>
 
     <section class="card alert" aria-labelledby="empty-title" data-empty-state hidden>
@@ -62,8 +63,9 @@
     <div class="form-actions card" data-preview-actions hidden>
       <a class="button secondary" href="feedback-form.html">返回编辑</a>
       <button class="button ghost" type="button" data-copy-plain-text>复制纯文本</button>
-      <button class="button primary" type="button" disabled>保存到历史（暂不可用）</button>
+      <button class="button primary" type="button" data-save-history>保存到历史</button>
       <p class="copy-status" data-copy-status aria-live="polite" hidden></p>
+      <p class="save-status" data-save-status aria-live="polite" hidden></p>
     </div>
   </main>
 </body>
