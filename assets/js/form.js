@@ -35,8 +35,12 @@ function readDraftFromStorage() {
 }
 
 function getDraft() {
+  const existingDraft = readDraftFromStorage();
   const operationSteps = Array.from(document.querySelectorAll("[data-operation-input]")).map((input) => input.value);
   return {
+    id: typeof existingDraft.id === "string" ? existingDraft.id : "",
+    createdAt: typeof existingDraft.createdAt === "string" ? existingDraft.createdAt : "",
+    updatedAt: typeof existingDraft.updatedAt === "string" ? existingDraft.updatedAt : "",
     title: readTextField("title"),
     usageBackground: readTextField("usageBackground"),
     userGoal: readTextField("userGoal"),

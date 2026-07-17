@@ -12,12 +12,21 @@ const previewTitle = document.querySelector("#preview-title");
 const previewList = document.querySelector("[data-preview-list]");
 const copyButton = document.querySelector("[data-copy-plain-text]");
 const copyStatus = document.querySelector("[data-copy-status]");
+const saveButton = document.querySelector("[data-save-history]");
+const saveStatus = document.querySelector("[data-save-status]");
 
 function showCopyStatus(message, type) {
   if (!copyStatus) return;
   copyStatus.textContent = message;
   copyStatus.className = `copy-status ${type === "success" ? "success" : "error"}`;
   copyStatus.hidden = false;
+}
+
+function showSaveStatus(message, type) {
+  if (!saveStatus) return;
+  saveStatus.textContent = message;
+  saveStatus.className = `save-status ${type === "success" ? "success" : "error"}`;
+  saveStatus.hidden = false;
 }
 
 function fallbackCopyText(text) {
@@ -86,15 +95,21 @@ function readDraft() {
   const saved = sessionStorage.getItem(DRAFT_KEY);
   if (!saved) return null;
   try {
-    return JSON.parse(saved);
+    const parsed = JSON.parse(saved);
+    return parsed && typeof parsed === "object" ? parsed : null;
   } catch {
     return null;
   }
 }
 
+function writeDraft(draft) {
+  sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+}
+
 function hasAnyContent(draft) {
   if (!draft) return false;
   return Object.entries(draft).some(([key, value]) => {
+    if (["id", "createdAt", "updatedAt"].includes(key)) return false;
     if (key === "operationSteps") return Array.isArray(value) && value.some((step) => typeof step === "string" && step.trim());
     return typeof value === "string" && value.trim();
   });
@@ -157,6 +172,28 @@ function appendSteps(steps) {
   previewList.append(term, description);
 }
 
+function saveToHistory(draft) {
+  if (!hasAnyContent(draft) || !window.FeedbackHistoryStorage) {
+    showSaveStatus("保存失败，请检查浏览器是否允许本地存储。", "error");
+    return;
+  }
+
+  try {
+    const storage = window.FeedbackHistoryStorage.createHistoryStorage();
+    const savedRecord = storage.save(draft);
+    Object.assign(draft, {
+      id: savedRecord.id,
+      createdAt: savedRecord.createdAt,
+      updatedAt: savedRecord.updatedAt,
+    });
+    writeDraft(draft);
+    showSaveStatus("已保存到当前浏览器的历史反馈。", "success");
+    if (saveButton) saveButton.textContent = "已保存";
+  } catch {
+    showSaveStatus("保存失败，请检查浏览器是否允许本地存储。", "error");
+  }
+}
+
 const draft = readDraft();
 if (!hasAnyContent(draft)) {
   emptyState.hidden = false;
@@ -179,5 +216,9 @@ if (!hasAnyContent(draft)) {
   if (copyButton) {
     copyButton.disabled = false;
     copyButton.addEventListener("click", () => copyPlainText(draft));
+  }
+  if (saveButton) {
+    saveButton.disabled = false;
+    saveButton.addEventListener("click", () => saveToHistory(draft));
   }
 }
