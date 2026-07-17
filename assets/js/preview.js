@@ -21,24 +21,35 @@ function showCopyStatus(message, type) {
 }
 
 function fallbackCopyText(text) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  textArea.setAttribute("readonly", "");
-  textArea.style.position = "fixed";
-  textArea.style.top = "-9999px";
-  textArea.style.left = "-9999px";
-  document.body.append(textArea);
-  textArea.select();
-  textArea.setSelectionRange(0, textArea.value.length);
+  let textArea = null;
 
-  let copied = false;
   try {
-    copied = document.execCommand("copy");
-  } finally {
-    textArea.remove();
-  }
+    if (typeof document.execCommand !== "function") {
+      return false;
+    }
 
-  return copied;
+    textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.top = "-9999px";
+    textArea.style.left = "-9999px";
+    document.body.append(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, textArea.value.length);
+
+    return document.execCommand("copy") === true;
+  } catch {
+    return false;
+  } finally {
+    if (textArea) {
+      try {
+        textArea.remove();
+      } catch {
+        // Even cleanup errors should not escape the fallback copy helper.
+      }
+    }
+  }
 }
 
 async function copyPlainText(draft) {
@@ -48,20 +59,27 @@ async function copyPlainText(draft) {
   }
 
   const text = window.buildFeedbackPlainText(draft);
-  try {
-    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+  let copied = false;
+
+  if (typeof navigator !== "undefined" && navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+    try {
       await navigator.clipboard.writeText(text);
-    } else if (!fallbackCopyText(text)) {
-      throw new Error("Fallback copy failed");
+      copied = true;
+    } catch {
+      copied = false;
     }
-    showCopyStatus("已复制，可以粘贴到文档或聊天工具中。", "success");
-  } catch {
-    if (fallbackCopyText(text)) {
-      showCopyStatus("已复制，可以粘贴到文档或聊天工具中。", "success");
-      return;
-    }
-    showCopyStatus("复制失败，请重试或手动选择预览内容。", "error");
   }
+
+  if (!copied) {
+    copied = fallbackCopyText(text);
+  }
+
+  if (copied) {
+    showCopyStatus("已复制，可以粘贴到文档或聊天工具中。", "success");
+    return;
+  }
+
+  showCopyStatus("复制失败，请重试或手动选择预览内容。", "error");
 }
 
 function readDraft() {
