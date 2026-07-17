@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>检查与预览 - 体验反馈工作台</title>
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="assets/js/completeness.js" defer></script>
   <script src="assets/js/preview.js" defer></script>
 </head>
 <body>
@@ -26,6 +27,26 @@
       <h2 id="empty-title">还没有可预览的填写内容</h2>
       <p>没有从当前浏览器标签页读取到反馈草稿。请先返回填写页输入内容。</p>
       <a class="button primary" href="feedback-form.html">返回填写</a>
+    </section>
+
+    <section class="card completeness-card" aria-labelledby="completeness-title" data-completeness-state hidden>
+      <div class="card-topline">
+        <span class="tag">完整度检查</span>
+        <span data-completeness-level class="level-badge"></span>
+      </div>
+      <h2 id="completeness-title">信息完整度检查</h2>
+      <div class="check-grid">
+        <div>
+          <h3>缺失字段</h3>
+          <p data-missing-empty hidden>必填项已填写。</p>
+          <ul data-missing-list></ul>
+        </div>
+        <div>
+          <h3>温和补充建议</h3>
+          <p data-suggestions-empty hidden>当前没有额外补充建议。</p>
+          <ul data-suggestions-list></ul>
+        </div>
+      </div>
     </section>
 
     <section class="card preview-card" aria-labelledby="preview-title" data-preview-state hidden>

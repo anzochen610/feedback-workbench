@@ -1,5 +1,11 @@
 const DRAFT_KEY = "feedbackWorkbenchDraft";
 const emptyState = document.querySelector("[data-empty-state]");
+const completenessState = document.querySelector("[data-completeness-state]");
+const completenessLevel = document.querySelector("[data-completeness-level]");
+const missingList = document.querySelector("[data-missing-list]");
+const missingEmpty = document.querySelector("[data-missing-empty]");
+const suggestionsList = document.querySelector("[data-suggestions-list]");
+const suggestionsEmpty = document.querySelector("[data-suggestions-empty]");
 const previewState = document.querySelector("[data-preview-state]");
 const previewActions = document.querySelector("[data-preview-actions]");
 const previewTitle = document.querySelector("#preview-title");
@@ -25,6 +31,32 @@ function hasAnyContent(draft) {
 
 function displayValue(value) {
   return typeof value === "string" && value.trim() ? value.trim() : "未填写";
+}
+
+function appendListItems(listElement, items) {
+  listElement.replaceChildren();
+  items.forEach((text) => {
+    const item = document.createElement("li");
+    item.textContent = text;
+    listElement.append(item);
+  });
+}
+
+function renderCompleteness(result) {
+  completenessLevel.textContent = result.level;
+  completenessLevel.className = "level-badge";
+  if (result.level === "缺少关键信息") completenessLevel.classList.add("level-missing");
+  if (result.level === "建议补充") completenessLevel.classList.add("level-suggest");
+  if (result.level === "基本完整") completenessLevel.classList.add("level-complete");
+
+  appendListItems(missingList, result.missingFields);
+  missingEmpty.hidden = result.missingFields.length > 0;
+  missingList.hidden = result.missingFields.length === 0;
+
+  appendListItems(suggestionsList, result.suggestions);
+  suggestionsEmpty.hidden = result.suggestions.length > 0;
+  suggestionsList.hidden = result.suggestions.length === 0;
+  completenessState.hidden = false;
 }
 
 function appendTextItem(label, value) {
@@ -58,6 +90,8 @@ const draft = readDraft();
 if (!hasAnyContent(draft)) {
   emptyState.hidden = false;
 } else {
+  const completenessResult = window.checkFeedbackCompleteness(draft);
+  renderCompleteness(completenessResult);
   previewTitle.textContent = displayValue(draft.title);
   appendTextItem("使用背景", draft.usageBackground);
   appendTextItem("用户目标", draft.userGoal);
