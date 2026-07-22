@@ -122,4 +122,67 @@ function fullDraft(extra = {}) {
   assert.throws(() => storage.save(fullDraft()), /write failed/);
 }
 
+
+{
+  const storage = createHistoryStorage(createFakeStorage());
+  const first = storage.save(fullDraft({ title: "第一条" }));
+  const second = storage.save(fullDraft({ title: "第二条" }));
+  const third = storage.save(fullDraft({ title: "第三条" }));
+  assert.equal(storage.remove(second.id), true);
+  assert.equal(storage.getById(second.id), null);
+  assert.deepEqual(storage.getAll().map((record) => record.id), [third.id, first.id]);
+}
+
+{
+  const storage = createHistoryStorage(createFakeStorage());
+  const first = storage.save(fullDraft({ title: "第一条" }));
+  const second = storage.save(fullDraft({ title: "第二条" }));
+  const before = storage.getAll();
+  assert.equal(storage.remove("missing-id"), false);
+  assert.deepEqual(storage.getAll(), before);
+  assert.deepEqual(storage.getAll().map((record) => record.id), [second.id, first.id]);
+}
+
+{
+  let writeCount = 0;
+  const fakeStorage = createFakeStorage();
+  const originalSetItem = fakeStorage.setItem;
+  fakeStorage.setItem = function setItem(storageKey, value) {
+    writeCount += 1;
+    originalSetItem.call(fakeStorage, storageKey, value);
+  };
+  const storage = createHistoryStorage(fakeStorage);
+  storage.save(fullDraft());
+  const writesAfterSave = writeCount;
+  assert.equal(storage.remove(""), false);
+  assert.equal(storage.remove("   "), false);
+  assert.equal(writeCount, writesAfterSave);
+}
+
+{
+  const savedRecords = [fullDraft({ id: "keep" }), fullDraft({ id: "remove-me" })];
+  const failingStorage = {
+    getItem(storageKey) {
+      return storageKey === key ? JSON.stringify(savedRecords) : null;
+    },
+    setItem() {
+      throw new Error("write failed");
+    },
+  };
+  const storage = createHistoryStorage(failingStorage);
+  assert.throws(() => storage.remove("remove-me"), /write failed/);
+}
+
+{
+  const storage = createHistoryStorage(createFakeStorage());
+  const first = storage.save(fullDraft({ title: "原标题" }));
+  const updated = storage.save(fullDraft({ id: first.id, title: "更新标题" }));
+  const records = storage.getAll();
+  assert.equal(records.length, 1);
+  assert.equal(records[0].id, first.id);
+  assert.equal(records[0].title, "更新标题");
+  assert.equal(updated.createdAt, first.createdAt);
+  assert.notEqual(updated.updatedAt, first.updatedAt);
+}
+
 console.log("history-storage tests passed");

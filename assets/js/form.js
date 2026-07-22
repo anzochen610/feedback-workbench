@@ -6,6 +6,7 @@ const prevButton = document.querySelector("[data-prev-step]");
 const nextButton = document.querySelector("[data-next-step]");
 const stepsContainer = document.querySelector("[data-operation-steps]");
 const addStepButton = document.querySelector("[data-add-step]");
+const formMode = document.querySelector("[data-form-mode]");
 let currentStep = 0;
 
 function field(name) {
@@ -112,6 +113,15 @@ function removeNewDraftParam() {
   history.replaceState(history.state, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
+function hasValidId(draft) {
+  return Boolean(draft && typeof draft.id === "string" && draft.id.trim());
+}
+
+function updateFormMode(draft) {
+  if (!formMode) return;
+  formMode.textContent = hasValidId(draft) ? "当前状态：编辑历史反馈" : "当前状态：新建反馈";
+}
+
 function restoreDraft() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("new") === "1") {
@@ -120,6 +130,7 @@ function restoreDraft() {
   }
 
   const draft = readDraftFromStorage();
+  updateFormMode(draft);
   writeTextField("title", draft.title);
   writeTextField("usageBackground", draft.usageBackground);
   writeTextField("userGoal", draft.userGoal);

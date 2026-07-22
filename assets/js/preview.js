@@ -172,21 +172,38 @@ function appendSteps(steps) {
   previewList.append(term, description);
 }
 
-function saveToHistory(draft) {
-  if (!hasAnyContent(draft) || !window.FeedbackHistoryStorage) {
+function hasValidId(draft) {
+  return Boolean(draft && typeof draft.id === "string" && draft.id.trim());
+}
+
+function isCurrentDraftValidForSave(previewDraft, currentDraft) {
+  if (!currentDraft) return false;
+  if (hasValidId(previewDraft) && previewDraft.id !== currentDraft.id) return false;
+  return true;
+}
+
+function saveToHistory(previewDraft) {
+  const currentDraft = readDraft();
+  if (!isCurrentDraftValidForSave(previewDraft, currentDraft)) {
+    showSaveStatus("当前草稿已失效或对应的历史反馈已被删除，请返回首页重新操作。", "error");
+    return;
+  }
+
+  if (!hasAnyContent(currentDraft) || !window.FeedbackHistoryStorage) {
     showSaveStatus("保存失败，请检查浏览器是否允许本地存储。", "error");
     return;
   }
 
   try {
     const storage = window.FeedbackHistoryStorage.createHistoryStorage();
-    const savedRecord = storage.save(draft);
-    Object.assign(draft, {
+    const savedRecord = storage.save(currentDraft);
+    Object.assign(currentDraft, {
       id: savedRecord.id,
       createdAt: savedRecord.createdAt,
       updatedAt: savedRecord.updatedAt,
     });
-    writeDraft(draft);
+    Object.assign(previewDraft, currentDraft);
+    writeDraft(currentDraft);
     showSaveStatus("已保存到当前浏览器的历史反馈。", "success");
     if (saveButton) saveButton.textContent = "已保存";
   } catch {
