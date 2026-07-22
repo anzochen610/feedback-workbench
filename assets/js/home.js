@@ -1,5 +1,7 @@
+const DRAFT_KEY = "feedbackWorkbenchDraft";
 const historyList = document.querySelector("[data-history-list]");
 const historyEmpty = document.querySelector("[data-history-empty]");
+const pageStatus = document.querySelector("[data-page-status]");
 
 function isRenderableRecord(record) {
   return Boolean(
@@ -28,12 +30,75 @@ function getOverview(record) {
   return actualResult || usageBackground || "暂无内容概览";
 }
 
-function createButton(text) {
+function getDisplayTitle(record) {
+  const title = typeof record.title === "string" ? record.title.trim() : "";
+  return title || "未命名反馈";
+}
+
+function showPageStatus(message, type) {
+  if (!pageStatus) return;
+  pageStatus.textContent = message;
+  pageStatus.className = `page-status ${type === "success" ? "success" : "error"}`;
+  pageStatus.hidden = false;
+}
+
+function clearDeletedDraft(deletedId) {
+  try {
+    const saved = sessionStorage.getItem(DRAFT_KEY);
+    if (!saved) return;
+    const parsed = JSON.parse(saved);
+    if (parsed && typeof parsed === "object" && parsed.id === deletedId) {
+      sessionStorage.removeItem(DRAFT_KEY);
+    }
+  } catch {
+    // Broken drafts should not interrupt a successful delete action.
+  }
+}
+
+function editRecord(id) {
+  const storage = window.FeedbackHistoryStorage.createHistoryStorage();
+  const record = storage.getById(id);
+  if (!record) {
+    showPageStatus("编辑失败，这条历史反馈可能已被删除。", "error");
+    return;
+  }
+
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(record));
+  } catch {
+    showPageStatus("编辑失败，请检查浏览器是否允许临时存储。", "error");
+    return;
+  }
+
+  window.location.href = "feedback-form.html";
+}
+
+function deleteRecord(id) {
+  const confirmed = window.confirm("确定删除这条历史反馈吗？删除后无法恢复。");
+  if (!confirmed) return;
+
+  try {
+    const storage = window.FeedbackHistoryStorage.createHistoryStorage();
+    const removed = storage.remove(id);
+    if (!removed) {
+      showPageStatus("删除失败，请重试。", "error");
+      return;
+    }
+    clearDeletedDraft(id);
+    renderHistory();
+    showPageStatus("历史反馈已删除。", "success");
+  } catch {
+    showPageStatus("删除失败，请重试。", "error");
+  }
+}
+
+function createActionButton(text, ariaLabel, onClick, extraClass = "") {
   const button = document.createElement("button");
-  button.className = "button ghost";
+  button.className = `button ghost${extraClass ? ` ${extraClass}` : ""}`;
   button.type = "button";
-  button.disabled = true;
   button.textContent = text;
+  button.setAttribute("aria-label", ariaLabel);
+  button.addEventListener("click", onClick);
   return button;
 }
 
@@ -58,8 +123,8 @@ function createHistoryCard(record) {
   topline.append(level, time);
 
   const title = document.createElement("h3");
-  const titleText = typeof record.title === "string" ? record.title.trim() : "";
-  title.textContent = titleText || "未命名反馈";
+  const displayTitle = getDisplayTitle(record);
+  title.textContent = displayTitle;
 
   const overview = document.createElement("p");
   overview.textContent = `信息概览：${getOverview(record)}`;
@@ -67,7 +132,10 @@ function createHistoryCard(record) {
   const actions = document.createElement("div");
   actions.className = "card-actions";
   actions.setAttribute("aria-label", "历史反馈操作");
-  actions.append(createButton("编辑（下一步实现）"), createButton("删除（下一步实现）"));
+  actions.append(
+    createActionButton("编辑", `编辑：${displayTitle}`, () => editRecord(record.id)),
+    createActionButton("删除", `删除：${displayTitle}`, () => deleteRecord(record.id), "danger")
+  );
 
   card.append(topline, title, overview, actions);
   return card;

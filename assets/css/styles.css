@@ -498,3 +498,46 @@ textarea { resize: vertical; }
     width: 100%;
   }
 }
+
+.page-status,
+.mode-note {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.page-status.success {
+  border-color: #9ccfc8;
+  background: #eaf7f5;
+  color: #0a5f59;
+}
+
+.page-status.error {
+  border-color: #e7b8ad;
+  background: #fff1ee;
+  color: #8a3c2f;
+}
+
+.button.danger {
+  border-color: #e7b8ad;
+  background: #fff8f6;
+  color: #8a3c2f;
+}
+
+.button.danger:hover {
+  background: #fff1ee;
+}
+
+.card-actions .button {
+  min-width: 88px;
+}
+
+@media (max-width: 760px) {
+  .card-actions .button {
+    flex: 1 1 120px;
+  }
+}

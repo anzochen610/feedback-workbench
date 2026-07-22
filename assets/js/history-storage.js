@@ -44,13 +44,22 @@
     );
   }
 
+  function createUpdatedAt(existingRecord) {
+    const now = new Date();
+    const existingTime = Date.parse(asText(existingRecord?.updatedAt));
+    if (!Number.isNaN(existingTime) && now.getTime() <= existingTime) {
+      return new Date(existingTime + 1).toISOString();
+    }
+    return now.toISOString();
+  }
+
   function normalizeRecord(draft, existingRecord) {
     const now = new Date().toISOString();
     const record = {
       id: asText(draft?.id) || asText(existingRecord?.id) || createId(),
       title: "",
       createdAt: asText(existingRecord?.createdAt) || asText(draft?.createdAt) || now,
-      updatedAt: now,
+      updatedAt: createUpdatedAt(existingRecord),
       usageBackground: "",
       userGoal: "",
       pageOrStep: "",
@@ -132,12 +141,17 @@
     }
 
     function remove(id) {
-      const usableStorage = requireStorage();
       const textId = asText(id);
+      if (!textId.trim()) return false;
+
       const records = getAll();
-      const nextRecords = records.filter((record) => !record || record.id !== textId);
+      const existingIndex = records.findIndex((record) => record && record.id === textId);
+      if (existingIndex < 0) return false;
+
+      const usableStorage = requireStorage();
+      const nextRecords = records.slice(0, existingIndex).concat(records.slice(existingIndex + 1));
       usableStorage.setItem(HISTORY_KEY, JSON.stringify(nextRecords));
-      return records.length !== nextRecords.length;
+      return true;
     }
 
     return { key: HISTORY_KEY, getAll, save, getById, remove };
